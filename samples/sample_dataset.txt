@@ -1,0 +1,4 @@
+# Same data in the compact format used by the API ("procs" parameter): PID,arrival,burst,priority;...
+P1,0,8,3;P2,1,4,1;P3,2,9,4;P4,3,5,2;P5,30,3,1
+# Optional dependencies ("deps" parameter): FROM>TO means TO waits for FROM
+P1>P3;P2>P4

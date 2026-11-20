@@ -1,0 +1,13 @@
+{
+  "version": 4,
+  "configurations": [
+    {
+      "name": "Win32-GCC",
+      "includePath": ["${workspaceFolder}/backend/include"],
+      "defines": ["_WIN32", "__USE_MINGW_ANSI_STDIO=1"],
+      "compilerPath": "gcc",
+      "cStandard": "gnu11",
+      "intelliSenseMode": "windows-gcc-x64"
+    }
+  ]
+}

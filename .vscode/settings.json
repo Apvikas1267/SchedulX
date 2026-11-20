@@ -1,0 +1,5 @@
+{
+  "C_Cpp.default.includePath": ["${workspaceFolder}/backend/include"],
+  "C_Cpp.default.cStandard": "gnu11",
+  "files.associations": { "*.h": "c" }
+}

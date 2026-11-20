@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SchedulX - DSA-Based CPU Scheduling Simulator</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">&#9881;</span> SchedulX <small>DSA-Based CPU Scheduling Simulator</small></div>
+  <nav id="nav">
+    <button data-page="dashboard" class="active">Dashboard</button>
+    <button data-page="processes">Processes</button>
+    <button data-page="scheduling">CPU Scheduling</button>
+    <button data-page="visualizer">DSA Visualizer</button>
+    <button data-page="compare">Comparison</button>
+  </nav>
+  <span id="backend-status" class="status off">backend: connecting…</span>
+</header>
+
+<main>
+<!-- ============ DASHBOARD ============ -->
+<section id="page-dashboard" class="page active">
+  <div class="card hero">
+    <h1>SchedulX</h1>
+    <p>A CPU scheduling and process-management simulator whose <b>entire scheduling logic runs in C</b>.
+       The browser only collects input and draws what the C backend returns. Every algorithm is built on a
+       data structure from the Data Structures &amp; Applications syllabus.</p>
+  </div>
+  <div class="stats" id="dash-stats"></div>
+  <h2>Scheduling algorithms</h2>
+  <div class="grid" id="dash-algos"></div>
+  <h2>Where each data structure is used</h2>
+  <div class="card"><table class="tbl" id="dash-ds"></table></div>
+</section>
+
+<!-- ============ PROCESS MANAGEMENT ============ -->
+<section id="page-processes" class="page">
+  <div class="card">
+    <h2 id="pm-title">Add process</h2>
+    <p class="hint">Stored in the C backend as a <b>singly linked list</b>, indexed by a <b>hash table</b> on the PID.
+      Priority: <b>lower number = higher priority</b> (can be switched per run). Times are whole numbers.</p>
+    <div class="form-row">
+      <label>PID<input id="pm-pid" maxlength="15" placeholder="P6"></label>
+      <label>Arrival<input id="pm-arrival" type="number" min="0" max="10000" value="0"></label>
+      <label>Burst<input id="pm-burst" type="number" min="1" max="10000" value="5"></label>
+      <label>Priority<input id="pm-priority" type="number" min="0" max="999" value="1"></label>
+      <button id="pm-save" class="primary">Add</button>
+      <button id="pm-cancel" class="ghost" hidden>Cancel edit</button>
+    </div>
+    <div class="form-row">
+      <label>Search PID<input id="pm-search" placeholder="type to search"></label>
+      <button id="pm-sample" class="ghost">Load sample dataset</button>
+      <button id="pm-clear" class="danger">Delete all</button>
+    </div>
+  </div>
+  <div class="card"><table class="tbl" id="pm-table"></table></div>
+</section>
+
+<!-- ============ CPU SCHEDULING ============ -->
+<section id="page-scheduling" class="page">
+  <div class="tabs" id="sched-tabs"></div>
+  <div id="sched-panels"></div>
+</section>
+
+<!-- ============ DSA VISUALIZER ============ -->
+<section id="page-visualizer" class="page">
+  <div class="card">
+    <h2>Run the Process Management dataset and watch the data structures</h2>
+    <p class="hint">Every picture below is drawn from JSON produced by the C data structures (linked list, hash table, graph, queues, heap, stack).</p>
+    <div class="form-row">
+      <label>Algorithm
+        <select id="viz-algo">
+          <option value="fcfs">FCFS (linked-list queue)</option>
+          <option value="sjf">SJF (min-heap on burst)</option>
+          <option value="srtf">SRTF (min-heap on remaining)</option>
+          <option value="rr" selected>Round Robin (circular queue)</option>
+          <option value="prio_np">Priority non-preemptive (min-heap)</option>
+          <option value="prio_p">Priority preemptive (min-heap)</option>
+        </select></label>
+      <label>Quantum<input id="viz-q" type="number" min="1" value="3"></label>
+      <label>Priority rule<select id="viz-prio"><option value="low">lower number = higher</option><option value="high">higher number = higher</option></select></label>
+      <button id="viz-run" class="primary">Run &amp; visualize</button>
+    </div>
+  </div>
+  <div class="two-col">
+    <div class="card"><h3>Linked list of processes</h3><div id="viz-list" class="scroll-x"></div></div>
+    <div class="card"><h3>Hash table (PID index, chaining)</h3><div id="viz-hash"></div></div>
+  </div>
+  <div class="card">
+    <h3>Process dependency graph (adjacency list)</h3>
+    <p class="hint">Edge <b>A → B</b> means B can start only after A has finished. Topological sorting decides what is eligible; circular dependencies are rejected.</p>
+    <div class="form-row">
+      <label>From<select id="dep-from"></select></label>
+      <label>To<select id="dep-to"></select></label>
+      <button id="dep-add" class="primary">Add dependency</button>
+      <button id="dep-sample" class="ghost">Load sample with dependencies</button>
+    </div>
+    <div class="two-col"><div id="viz-graph"></div><div id="viz-graph-info"></div></div>
+  </div>
+  <div class="card">
+    <h3>Execution trace (step through the scheduler)</h3>
+    <div class="form-row">
+      <button id="step-prev" class="ghost">&#9664; Prev</button>
+      <input id="step-range" type="range" min="0" max="0" value="0" style="flex:1">
+      <button id="step-next" class="ghost">Next &#9654;</button>
+      <button id="step-play" class="ghost">&#9654; Play</button>
+    </div>
+    <div id="viz-step-info" class="hint"></div>
+    <div class="two-col">
+      <div><h4 id="viz-ready-title">Ready structure</h4><div id="viz-ready" class="scroll-x"></div></div>
+      <div><h4>Execution history stack (top first)</h4><div id="viz-stack"></div></div>
+    </div>
+    <h4>Gantt chart of this run</h4><div id="viz-gantt"></div>
+  </div>
+</section>
+
+<!-- ============ COMPARISON ============ -->
+<section id="page-compare" class="page">
+  <div class="card">
+    <h2>Compare all algorithms on the same dataset</h2>
+    <p class="hint">Uses the Process Management dataset. Every number is computed by the C scheduler.</p>
+    <div class="form-row">
+      <label>Round Robin quantum<input id="cmp-q" type="number" min="1" value="2"></label>
+      <label>Priority rule<select id="cmp-prio"><option value="low">lower number = higher</option><option value="high">higher number = higher</option></select></label>
+      <button id="cmp-run" class="primary">Compare</button>
+    </div>
+  </div>
+  <div id="cmp-out"></div>
+</section>
+</main>
+<div id="toast"></div>
+
+<script src="js/api.js"></script>
+<script src="js/processes.js"></script>
+<script src="js/scheduling.js"></script>
+<script src="js/visualizer.js"></script>
+<script src="js/compare.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

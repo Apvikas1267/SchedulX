@@ -1,0 +1,8 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    { "label": "Build backend", "type": "shell", "command": "backend\\build.bat", "group": { "kind": "build", "isDefault": true } },
+    { "label": "Run SchedulX", "type": "shell", "command": "scripts\\run.bat", "problemMatcher": [] },
+    { "label": "Run tests", "type": "shell", "command": "backend\\build.bat test", "group": "test" }
+  ]
+}
