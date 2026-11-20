@@ -8,19 +8,50 @@ async function api(method, path, params) {
     opt.body = new URLSearchParams(params).toString();
   }
   let res;
-  try { res = await fetch(API_BASE + path, opt); }
-  catch (e) { setStatus(false); throw new Error('Cannot reach the C backend. Is schedulx.exe running?'); }
-  setStatus(true);
-  let data;
-  try { data = await res.json(); } catch (e) { throw new Error('Invalid response from backend'); }
-  if (!data.ok) throw new Error(data.error || 'Request failed');
-  return data;
+  try {
+    res = await fetch(API_BASE + path, opt);
+    if (!res.ok && res.status === 404) throw new Error('404');
+    let data;
+    try { data = await res.json(); } catch (e) { throw new Error('Invalid response from backend'); }
+    if (!data.ok) throw new Error(data.error || 'Request failed');
+    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+      setStatus('c_local');
+    } else {
+      setStatus('cloud');
+    }
+    return data;
+  } catch (e) {
+    // If remote or local server cannot be reached, fallback seamlessly to in-browser DSA engine
+    if (typeof window !== 'undefined' && window.SchedulXEngine && window.SchedulXEngine.clientApi) {
+      try {
+        const data = await window.SchedulXEngine.clientApi(method, path, params);
+        setStatus('in_browser');
+        return data;
+      } catch (clientErr) {
+        throw clientErr;
+      }
+    }
+    setStatus('off');
+    throw new Error('Cannot reach the C backend. Is schedulx.exe running?');
+  }
 }
 
-function setStatus(on) {
+function setStatus(mode) {
   const el = document.getElementById('backend-status');
-  el.className = 'status ' + (on ? 'on' : 'off');
-  el.textContent = on ? 'C backend: connected' : 'C backend: offline';
+  if (!el) return;
+  if (mode === true || mode === 'c_local') {
+    el.className = 'status on';
+    el.textContent = 'C backend: connected';
+  } else if (mode === 'cloud') {
+    el.className = 'status on';
+    el.textContent = 'Backend: connected (cloud)';
+  } else if (mode === 'in_browser') {
+    el.className = 'status on';
+    el.textContent = 'DSA engine: active (web)';
+  } else {
+    el.className = 'status off';
+    el.textContent = 'Backend: offline';
+  }
 }
 
 const $ = (s, r = document) => r.querySelector(s);

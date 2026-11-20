@@ -1,0 +1,21 @@
+{
+  "name": "schedulx",
+  "version": "1.0.0",
+  "description": "DSA-Based CPU Scheduling and Process Management Simulator",
+  "main": "api/index.js",
+  "scripts": {
+    "test": "node api/engine.js"
+  },
+  "keywords": [
+    "cpu-scheduling",
+    "data-structures",
+    "algorithms",
+    "fcfs",
+    "sjf",
+    "srtf",
+    "round-robin",
+    "priority-scheduling"
+  ],
+  "author": "",
+  "license": "MIT"
+}

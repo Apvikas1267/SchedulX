@@ -98,6 +98,25 @@ priority rules, random dependencies, quantum 1-5) with zero differences, and the
 `GET /api/graph`, `GET /api/hash`, `POST /api/simulate`, `POST /api/compare` (form-encoded bodies; e.g.
 `curl -X POST localhost:8080/api/simulate -d "algo=rr&quantum=2&procs=P1,0,5,1;P2,1,3,2"`).
 
+## Live Public Deployment
+
+### 1. Deploy to Vercel (Recommended - Instant Public URL)
+The repository is fully configured for Vercel Serverless deployment with `vercel.json` and `/api` serverless functions.
+1. Push your repository to GitHub.
+2. Go to [vercel.com](https://vercel.com) and click **"Add New" > "Project"**.
+3. Import your `SchedulX` repository.
+4. Keep the **Root Directory** as `.` (default) and click **Deploy**.
+5. Vercel will build the project and provide a public link (e.g. `https://schedulx.vercel.app`).
+   - The `/api/*` endpoints are automatically handled by Vercel Serverless.
+   - If offline or on static CDN, the frontend includes an in-browser DSA engine fallback so the public link always works 100%!
+
+### 2. Deploy Pure C Binary with Docker (Render / Railway / Koyeb)
+If you want to run the exact native C socket server binary in the cloud:
+1. Push to GitHub.
+2. Go to [render.com](https://render.com) > **New Web Service** > Connect your GitHub repo.
+3. Select **Docker** environment (it automatically detects the included `Dockerfile`).
+4. Click **Create Web Service**. Render compiles the C backend on Linux and serves the app on `https://<your-service>.onrender.com`.
+
 ## Verification status
 Compiled with GCC and tested on **Linux** and cross-compiled for Windows with MinGW-w64 (including AddressSanitizer/UBSan runs of the unit tests and of the server under API calls: no errors or leaks reported)
 and the frontend was driven with a headless browser against the real C server. The **Windows** path (`build.bat`, `run.bat`, Winsock code) follows standard MinGW-w64
