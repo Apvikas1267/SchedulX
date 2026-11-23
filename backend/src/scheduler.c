@@ -85,6 +85,19 @@ static int cmp_cand(const void *a, const void *b) {
     return x->index - y->index;
 }
 
+/* Manual in-place insertion sort: zero built-in sorting functions used */
+static void cand_sort(struct Cand *a, int n) {
+    for (int i = 1; i < n; i++) {
+        struct Cand key = a[i];
+        int j = i - 1;
+        while (j >= 0 && cmp_cand(&a[j], &key) > 0) {
+            a[j + 1] = a[j];
+            j--;
+        }
+        a[j + 1] = key;
+    }
+}
+
 /* Move every process that is eligible now (arrived and all dependencies finished) into the ready
    structure, in order of the moment it became eligible (ties: arrival, then input order). */
 static void admit(Sim *s) {
@@ -95,7 +108,7 @@ static void admit(Sim *s) {
             s->cand[k].ready = s->ready_at[i]; s->cand[k].arrival = p->arrival; s->cand[k].index = i; s->cand[k].p = p; k++;
         }
     }
-    if (k > 1) qsort(s->cand, (size_t)k, sizeof s->cand[0], cmp_cand);
+    if (k > 1) cand_sort(s->cand, k);
     for (int i = 0; i < k && !s->fail; i++) { s->cand[i].p->admitted = 1; ready_insert(s, s->cand[i].p); }
 }
 
