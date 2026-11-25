@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SchedulX - Experiential Learning Presentation</title>
+<style>
+  :root {
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --primary: #1a2530;
+    --secondary: #334155;
+    --accent: #2563eb;
+    --accent-bg: #eef2ff;
+    --border: #e2e8f0;
+    --green: #16a34a;
+    --red: #e11d48;
+    --box-bg: #f1f5f9;
+    --muted: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  body { background: #0f172a; color: var(--primary); padding: 20px 0; }
+  .deck { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 30px; }
+  .slide {
+    background: var(--card);
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    padding: 40px 50px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .slide-header { border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 24px; }
+  .slide-category { font-size: 0.85rem; font-weight: 700; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+  .slide-title { font-size: 1.85rem; font-weight: 800; color: var(--primary); }
+  .slide-footer { position: absolute; bottom: 15px; left: 50px; right: 50px; display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); border-top: 1px solid var(--border); padding-top: 8px; }
+
+  /* Title Slide */
+  .title-slide { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; justify-content: center; align-items: center; text-align: center; }
+  .title-badge { background: rgba(37,99,235,0.2); border: 1px solid rgba(147,197,253,0.3); padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: #93c5fd; display: inline-block; margin-bottom: 16px; }
+  .main-title { font-size: 3.5rem; font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; background: linear-gradient(90deg, #ffffff, #93c5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .main-subtitle { font-size: 1.35rem; color: #cbd5e1; margin-bottom: 24px; font-weight: 500; }
+  .title-meta { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 16px 28px; border-radius: 10px; width: 85%; display: flex; justify-content: space-around; text-align: left; margin-top: 10px; }
+  .meta-col div:first-child { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+  .meta-col div:last-child { font-size: 0.95rem; font-weight: 600; color: white; margin-top: 2px; }
+
+  /* Outline Grid */
+  .outline-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex: 1; align-content: center; }
+  .outline-card { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border: 1px solid var(--border); border-radius: 8px; background: var(--box-bg); }
+  .outline-num { background: var(--accent-bg); color: var(--accent); font-weight: 800; font-size: 1.2rem; width: 42px; height: 42px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .outline-text h4 { font-size: 1.05rem; color: var(--primary); font-weight: 700; }
+  .outline-text p { font-size: 0.8rem; color: var(--secondary); margin-top: 2px; }
+
+  /* List Cards */
+  .card-stack { display: flex; flex-direction: column; gap: 12px; flex: 1; justify-content: center; }
+  .item-card { display: flex; border: 1px solid var(--border); border-radius: 8px; background: white; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+  .pill-bar { width: 6px; flex-shrink: 0; }
+  .pill-blue { background: var(--accent); }
+  .pill-green { background: var(--green); }
+  .pill-red { background: var(--red); }
+  .item-content { padding: 12px 18px; flex: 1; }
+  .item-title { font-size: 0.95rem; font-weight: 700; color: var(--primary); margin-bottom: 2px; }
+  .item-body { font-size: 0.82rem; color: var(--secondary); line-height: 1.35; }
+
+  /* Table styling */
+  .slide-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; flex: 1; }
+  .slide-table th { background: var(--primary); color: white; padding: 8px 12px; text-align: left; font-weight: 700; border: 1px solid var(--primary); }
+  .slide-table td { padding: 8px 12px; border: 1px solid var(--border); color: var(--secondary); line-height: 1.3; }
+  .slide-table tr:nth-child(even) td { background: var(--box-bg); }
+  .slide-table td.strong { font-weight: 700; color: var(--primary); }
+
+  /* Architecture diagram */
+  .arch-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; flex: 1; align-items: center; }
+  .arch-flow { display: flex; flex-direction: column; gap: 8px; }
+  .flow-box { background: var(--box-bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 14px; font-size: 0.8rem; }
+  .flow-box b { color: var(--primary); font-size: 0.85rem; }
+  .side-panel { background: white; border: 1.5px solid var(--accent); border-radius: 8px; padding: 16px; height: 100%; display: flex; flex-direction: column; gap: 8px; }
+  .side-panel h3 { font-size: 0.95rem; color: var(--accent); font-weight: 700; }
+  .side-pill { background: var(--box-bg); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font-size: 0.75rem; }
+  .side-pill b { color: var(--primary); display: block; }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .slide { page-break-after: always; box-shadow: none; border-radius: 0; height: 100vh; width: 100vw; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <!-- SLIDE 1 -->
+  <div class="slide title-slide">
+    <div class="title-badge">R V COLLEGE OF ENGINEERING ® • CS233AI DSA EL</div>
+    <div class="main-title">SchedulX</div>
+    <div class="main-subtitle">DSA-Based CPU Scheduling &amp; Process Management Simulator</div>
+    <p style="max-width: 800px; color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px;">
+      A high-performance C backend implementing 7 foundational data structures from scratch with zero built-in functions,
+      featuring interactive step-by-step visual state animations and live Vercel cloud deployment.
+    </p>
+    <div class="title-meta">
+      <div class="meta-col">
+        <div>Student Name</div>
+        <div>AP Vikas</div>
+      </div>
+      <div class="meta-col">
+        <div>Course</div>
+        <div>Data Structures &amp; Applications</div>
+      </div>
+      <div class="meta-col">
+        <div>Base Paper</div>
+        <div>IEEE FIE (Suranauwarat, 2015)</div>
+      </div>
+      <div class="meta-col">
+        <div>GitHub</div>
+        <div>github.com/Apvikas1267/SchedulX</div>
+      </div>
+    </div>
+    <div class="slide-footer" style="border: none; color: #64748b;">
+      <span>Experiential Learning Presentation</span>
+      <span>Department of Computer Science &amp; Engineering</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-category">Experiential Learning</div>
+      <div class="slide-title">Presentation Outline</div>
+    </div>
+    <div class="outline-grid">
+      <div class="outline-card"><div class="outline-num">01</div><div class="outline-text"><h4>Introduction</h4><p>Overview of SchedulX, pure C implementation &amp; core pipeline</p></div></div>
+      <div class="outline-card"><div class="outline-num">02</div><div class="outline-text"><h4>Problem Statement</h4><p>Textbook abstractions, black-box schedulers &amp; dependency deadlocks</p></div></div>
+      <div class="outline-card"><div class="outline-num">03</div><div class="outline-text"><h4>Objectives</h4><p>Algorithms, custom data structures, DAGs, visualizer &amp; cloud</p></div></div>
+      <div class="outline-card"><div class="outline-num">04</div><div class="outline-text"><h4>Methodology &amp; Architecture</h4><p>End-to-end execution flow: from process store to Gantt timeline</p></div></div>
+      <div class="outline-card"><div class="outline-num">05</div><div class="outline-text"><h4>Data Structures Used</h4><p>Comprehensive mapping of 7 hand-crafted data structures without built-ins</p></div></div>
+      <div class="outline-card"><div class="outline-num">06</div><div class="outline-text"><h4>Results &amp; Verification</h4><p>622 test cases, 12,000 random validation runs &amp; textbook benchmarks</p></div></div>
+      <div class="outline-card"><div class="outline-num">07</div><div class="outline-text"><h4>Conclusion &amp; Future Scope</h4><p>Syllabus coverage, limitations, and future multi-core extensions</p></div></div>
+      <div class="outline-card"><div class="outline-num">08</div><div class="outline-text"><h4>References</h4><p>IEEE base paper, standard OS textbooks &amp; algorithm literature</p></div></div>
+    </div>
+    <div class="slide-footer"><span>SchedulX - DSA EL Presentation</span><span>Slide 2</span></div>
+  </div>
+
+  <!-- SLIDE 3 -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-category">Experiential Learning</div>
+      <div class="slide-title">Introduction</div>
+    </div>
+    <div class="card-stack">
+      <div class="item-card"><div class="pill-bar pill-blue"></div><div class="item-content"><div class="item-title">High-Performance Pure C Architecture</div><div class="item-body">SchedulX is a comprehensive CPU scheduling and process management simulator whose entire scheduling logic and data structures are written strictly in pure C (C99/GNU11). JavaScript only collects user input and renders graphs; all scheduling calculations are performed by C structures.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-blue"></div><div class="item-content"><div class="item-title">End-to-End Core Simulation Pipeline</div><div class="item-body">Process Store (Linked List) → PID Index (DJB2 Hash Table) → Precedence Resolver (DAG Topological Sort) → Ready Queue Dispatcher (FIFO Queue / Circular Queue / Min-Heap) → Execution Engine → History Trace (LIFO Stack) → Performance Stats.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-blue"></div><div class="item-content"><div class="item-title">Six Classical Scheduling Algorithms Supported</div><div class="item-body">Implements First-Come, First-Served (FCFS), Shortest Job First (non-preemptive), Shortest Remaining Time First (preemptive), Round Robin (configurable quantum), and Priority Scheduling (both preemptive and non-preemptive modes with customizable priority rules).</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-blue"></div><div class="item-content"><div class="item-title">Strict 'No Built-in Function' Compliance</div><div class="item-body">Every data structure—Singly Linked List, Separate-Chaining Hash Table, FIFO Queue, Circular Queue, Binary Min-Heap, Stack, and Graph Adjacency List—is built from scratch. Standard library qsort was replaced with a hand-written insertion sort for arrival tie-breaking.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-blue"></div><div class="item-content"><div class="item-title">Dual-Mode Deployment: Local &amp; Cloud</div><div class="item-body">Runs natively on desktop via a lightweight embedded C Winsock HTTP server (localhost:8080) for grading/viva, and is concurrently deployed live to the public internet on Vercel via serverless execution with zero external dependencies.</div></div></div>
+    </div>
+    <div class="slide-footer"><span>SchedulX - DSA EL Presentation</span><span>Slide 3</span></div>
+  </div>
+
+  <!-- SLIDE 4 -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-category">Experiential Learning</div>
+      <div class="slide-title">Problem Statement</div>
+    </div>
+    <div class="card-stack">
+      <div class="item-card"><div class="pill-bar pill-red"></div><div class="item-content"><div class="item-title">Theoretical Textbook Abstraction</div><div class="item-body">Standard operating systems textbooks illustrate CPU scheduling through static, hand-calculated tables and simplified execution models. Students cannot observe how dynamic burst arrivals, preemptions, and context switches happen in a real-time running system.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-red"></div><div class="item-content"><div class="item-title">Black-Box Scheduler Disconnect</div><div class="item-body">Existing educational tools treat schedulers as 'black boxes'—they compute waiting time but hide the underlying data structures. Learners cannot see how a circular queue wraps around, how a min-heap restores its invariant, or how hash buckets resolve collisions.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-red"></div><div class="item-content"><div class="item-title">Unresolved Dependencies &amp; Deadlock Risk</div><div class="item-body">In real workloads, processes have strict execution precedence (e.g., Process B requires Process A's output). Classical simulators ignore dependencies, risking race conditions and circular deadlocks when processes wait on each other.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-red"></div><div class="item-content"><div class="item-title">Lack of Comparative Benchmarking</div><div class="item-body">Evaluating which algorithm performs best under specific conditions (burst variation, arrival clustering, tiny vs. large quantum) is difficult without running all algorithms on the exact same workload with standardized comparative metrics.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-red"></div><div class="item-content"><div class="item-title">Need for First-Principles C Implementation</div><div class="item-body">Higher-level languages (Python, Java) hide memory allocations and pointer operations behind automated garbage collection and built-in classes. A pure C implementation with zero built-in functions is essential to master true low-level systems engineering.</div></div></div>
+    </div>
+    <div class="slide-footer"><span>SchedulX - DSA EL Presentation</span><span>Slide 4</span></div>
+  </div>
+
+  <!-- SLIDE 5 -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-category">Experiential Learning</div>
+      <div class="slide-title">Objectives</div>
+    </div>
+    <div class="card-stack">
+      <div class="item-card"><div class="pill-bar pill-green"></div><div class="item-content"><div class="item-title">1. Implement Core CPU Scheduling Algorithms in C</div><div class="item-body">Develop robust, standalone C implementations of FCFS, Non-Preemptive SJF, Preemptive SRTF, Round Robin, and Priority Scheduling (both preemptive and non-preemptive), strictly following syllabus tie-breaking conventions.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-green"></div><div class="item-content"><div class="item-title">2. Build Foundational Data Structures from Scratch</div><div class="item-body">Hand-craft all seven course data structures in pure C without relying on built-in libraries: Singly Linked List, Separate-Chaining Hash Table, FIFO Queue, Circular Queue, Binary Min-Heap, LIFO Stack, and Directed Graph.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-green"></div><div class="item-content"><div class="item-title">3. Precedence Management &amp; Deadlock Prevention via DAGs</div><div class="item-body">Implement a Directed Acyclic Graph (DAG) using adjacency lists, Kahn's Topological Sort algorithm for dependency scheduling, and 3-color DFS cycle detection to reject deadlocked processes before simulation.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-green"></div><div class="item-content"><div class="item-title">4. Interactive Visualization &amp; Step-by-Step Tracing</div><div class="item-body">Provide a rich interactive frontend featuring dynamic Gantt charts, context-switch preemption flags, an execution timeline slider, and live data structure inspectors showing ready structures after every CPU dispatch.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-green"></div><div class="item-content"><div class="item-title">5. Quantitative Benchmarking &amp; Dual Deployment</div><div class="item-body">Compute exact metrics (Turnaround Time, Waiting Time, Response Time, CPU Utilization, Throughput), support multi-algorithm side-by-side comparison, and provide dual deployment (Local C Server &amp; Live Vercel Public Link).</div></div></div>
+    </div>
+    <div class="slide-footer"><span>SchedulX - DSA EL Presentation</span><span>Slide 5</span></div>
+  </div>
+
+  <!-- SLIDE 6 -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-category">Experiential Learning</div>
+      <div class="slide-title">Methodology &amp; System Architecture</div>
+    </div>
+    <div class="arch-layout">
+      <div class="arch-flow">
+        <div class="flow-box"><b>1. Input Dataset:</b> User inputs PIDs, Arrival, Burst, Priority, Dependencies (or CSV/sample)</div>
+        <div class="flow-box"><b>2. Process Store &amp; Hash Index:</b> Singly Linked List stores records; DJB2 Hash Table enables O(1) lookup</div>
+        <div class="flow-box"><b>3. Precedence Analyzer (DAG):</b> Kahn's Topological Sort orders eligible tasks; DFS checks for cycles</div>
+        <div class="flow-box"><b>4. Ready Queue Dispatcher:</b> FCFS (Linked Queue) | RR (Circular Queue) | SJF/SRTF/Priority (Min-Heap)</div>
+        <div class="flow-box"><b>5. Execution Engine:</b> Simulates time ticks, handles quantum slices, triggers preemption, logs Gantt slices</div>
+        <div class="flow-box"><b>6. History Trace &amp; Metrics:</b> LIFO Stack records dispatches; computes Completion, Turnaround, Waiting, CPU %</div>
+        <div class="flow-box"><b>7. Interactive Frontend:</b> Serves web GUI via C Winsock / Vercel Serverless; renders Gantt &amp; DSA inspectors</div>
+      </div>
+      <div class="side-panel">
+        <h3>Data Structures Role</h3>
+        <p style="font-size: 0.75rem; color: var(--muted); margin-bottom: 4px;">Updated for every CPU dispatch</p>
+        <div class="side-pill"><b>Hash Table (djb2)</b> O(1) PID index &amp; separate chaining</div>
+        <div class="side-pill"><b>Linked List</b> Dynamic process storage &amp; traversal</div>
+        <div class="side-pill"><b>Binary Min-Heap</b> Priority &amp; burst extraction in O(log n)</div>
+        <div class="side-pill"><b>Circular Queue</b> Modulo wrap-around array queue for RR</div>
+        <div class="side-pill"><b>LIFO Stack</b> Maintains CPU execution history trace</div>
+        <div class="side-pill"><b>DAG Graph</b> Resolves task precedence dependencies</div>
+      </div>
+    </div>
+    <div class="slide-footer"><span>SchedulX - DSA EL Presentation</span><span>Slide 6</span></div>
+  </div>
+
+  <!-- SLIDE 7 -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-category">Experiential Learning</div>
+      <div class="slide-title">Data Structures Used</div>
+    </div>
+    <table class="slide-table">
+      <thead>
+        <tr><th>Concept</th><th>Where It Is Used</th><th>Why It Fits / Time Complexity &amp; Rationale</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="strong">Singly Linked List</td><td>Process management store (insert, edit, delete, search)</td><td>Dynamic allocation; processes added/removed frequently without array shifting; O(1) tail insert.</td></tr>
+        <tr><td class="strong">Hash Table (djb2)</td><td>O(1) PID lookup in process table and dependency validation</td><td>Direct access by string PID; 13 buckets with separate chaining linked lists for collision resolution.</td></tr>
+        <tr><td class="strong">FIFO Queue (Linked)</td><td>FCFS ready queue buffer</td><td>Strict First-In-First-Out ordering; dynamic linked nodes prevent arbitrary capacity limits; O(1) enqueue/dequeue.</td></tr>
+        <tr><td class="strong">Circular Queue (Array)</td><td>Round Robin ready queue</td><td>Array with modulo arithmetic (front + size) % cap; enables efficient cyclic rotation of preempted slices.</td></tr>
+        <tr><td class="strong">Binary Min-Heap</td><td>SJF, SRTF, and Priority ready queue</td><td>Complete binary tree in array; O(log n) sift-up/sift-down; root guarantees immediate O(1) lowest burst/highest priority.</td></tr>
+        <tr><td class="strong">LIFO Stack</td><td>CPU execution history trace</td><td>Last-In-First-Out order; push on dispatch records execution sequence; allows step-by-step visualizer replay.</td></tr>
+        <tr><td class="strong">Directed Graph (DAG)</td><td>Process dependency resolution (A → B)</td><td>Adjacency list stores precedence edges; Kahn's topological sort finds eligible tasks; DFS detects deadlocks.</td></tr>
+        <tr><td class="strong">Insertion Sort</td><td>Arrival tie-breaker in scheduler</td><td>In-place, stable O(n) sort on small candidate sets; eliminates standard library qsort() for 100% custom C compliance.</td></tr>
+      </tbody>
+    </table>
+    <div class="slide-footer"><span>SchedulX - DSA EL Presentation</span><span>Slide 7</span></div>
+  </div>
+
+  <!-- SLIDE 8 -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-category">Experiential Learning</div>
+      <div class="slide-title">Results &amp; Verification</div>
+    </div>
+    <table class="slide-table">
+      <thead>
+        <tr><th style="width: 38%;">Test Category / Scenario</th><th>Observed Outcome &amp; Verified Performance Metrics</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="strong">622 Automated Unit Checks (test_scheduler.c)</td><td>100% passed (622/622). Verifies heap property invariants, circular queue wrap-around, stack LIFO, hash chaining, and list CRUD.</td></tr>
+        <tr><td class="strong">Textbook Benchmark (P1-P4: Bursts 8, 4, 9, 5)</td><td>SRTF Avg Waiting Time = 6.50, Avg Turnaround = 13.00, CPU Util = 100%. Matches standard OS textbook results to the exact decimal.</td></tr>
+        <tr><td class="strong">Round Robin Quantum Sensitivity (q = 1, 2, 3, 4, 100)</td><td>Higher quantum reduces context switches; q=1 produces 26 Gantt segments (AWT=12.50), while q=100 degenerates gracefully into FCFS (AWT=8.75).</td></tr>
+        <tr><td class="strong">Simultaneous Arrivals at t = 2 (A, B, C, D)</td><td>All jobs arrive together; tie-breaker preserves arrival/input order. SJF schedules shortest job C first; idle period [0-2] lowers CPU util to 83.33%.</td></tr>
+        <tr><td class="strong">Idle CPU Gap Handling</td><td>CPU correctly jumps to future arrivals (e.g. t=4 to t=8) and generates explicit IDLE Gantt segments; total simulation time spans 0 to last completion.</td></tr>
+        <tr><td class="strong">Preemption &amp; High-Burst Stress Test (500 units)</td><td>P1 (burst 500) is preempted by short arrivals (P2, P3) under SRTF and preemptive priority; slices merge cleanly with zero memory leaks.</td></tr>
+        <tr><td class="strong">Cyclic Dependency Rejection (A → B → C → A)</td><td>Kahn's topological sort fails count; 3-color DFS traces and displays exact cycle path 'A → B → C → A'; simulation safely refused without crashing.</td></tr>
+        <tr><td class="strong">12,000 Random Dataset Validation</td><td>Compared tick-by-tick against an independent reference simulator across 12,000 randomized workloads: exactly 0 discrepancies observed.</td></tr>
+      </tbody>
+    </table>
+    <div class="slide-footer"><span>SchedulX - DSA EL Presentation</span><span>Slide 8</span></div>
+  </div>
+
+  <!-- SLIDE 9 -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-category">Experiential Learning</div>
+      <div class="slide-title">Conclusion &amp; Future Scope</div>
+    </div>
+    <div class="card-stack">
+      <div class="item-card"><div class="pill-bar pill-blue"></div><div class="item-content"><div class="item-title">Full Syllabus Alignment &amp; Zero Built-ins</div><div class="item-body">Successfully designed and implemented an experiential CPU scheduling simulator covering all CS233AI topics. All 7 core data structures and sorting algorithms are hand-coded in pure C without relying on C++ STL or standard libraries.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-blue"></div><div class="item-content"><div class="item-title">Rigorous Mathematical &amp; Algorithmic Validation</div><div class="item-body">Demonstrated that min-heaps reduce priority extraction from O(n) to O(log n), circular queues ensure O(1) round-robin rotation, and hash tables guarantee O(1) process retrieval. Verified across 622 unit checks and 12,000 randomized test suites.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-blue"></div><div class="item-content"><div class="item-title">Interactive Learning via Visual State Tracing</div><div class="item-body">Bridged the textbook theory gap by visually depicting ready queues, heap trees, stack history, and Gantt charts after every dispatch, enabling students to inspect internal data structure states at any time tick.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-blue"></div><div class="item-content"><div class="item-title">Robust Dual-Mode Deployment</div><div class="item-body">Operates locally as a self-contained Winsock HTTP server for college evaluations, and is deployed live on Vercel via serverless architecture with an in-browser fallback engine ensuring 100% public uptime.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-blue"></div><div class="item-content"><div class="item-title">Future Scope &amp; Enhancements</div><div class="item-body">Future extensions include multi-core symmetric multiprocessing (SMP) scheduling, Multilevel Feedback Queue (MLFQ) with dynamic aging, and real-time scheduling algorithms (Earliest Deadline First - EDF, Rate Monotonic - RMS).</div></div></div>
+    </div>
+    <div class="slide-footer"><span>SchedulX - DSA EL Presentation</span><span>Slide 9</span></div>
+  </div>
+
+  <!-- SLIDE 10 -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-category">Experiential Learning</div>
+      <div class="slide-title">References</div>
+    </div>
+    <div class="card-stack" style="gap: 8px;">
+      <div class="item-card" style="border: 1.5px solid var(--accent);"><div class="pill-bar pill-blue"></div><div class="item-content"><div class="item-title" style="color: var(--accent);">[1] BASE PAPER</div><div class="item-body" style="font-size: 0.82rem; font-weight: 500;">S. Suranauwarat, "Using an Interactive Animated Tool to Improve the Effectiveness of Learning CPU Scheduling Algorithms," <i>2015 IEEE Frontiers in Education Conference (FIE)</i>, El Paso, TX, USA, 2015, pp. 1-7, doi: 10.1109/FIE.2015.7344239.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-blue"></div><div class="item-content"><div class="item-body">[2] S. Suranauwarat, "A CPU Scheduling Algorithm Simulator," <i>37th Annual Frontiers in Education Conference - Global Engineering: Knowledge Without Borders, Opportunities Without Passports</i>, Milwaukee, WI, USA, 2007, pp. T2A-1-T2A-5.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-blue"></div><div class="item-content"><div class="item-body">[3] A. Silberschatz, P. B. Galvin, and G. Gagne, <i>Operating System Concepts</i>, 10th ed., Hoboken, NJ: John Wiley &amp; Sons, 2018.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-blue"></div><div class="item-content"><div class="item-body">[4] T. H. Cormen, C. E. Leiserson, R. L. Rivest, and C. Stein, <i>Introduction to Algorithms</i>, 4th ed., Cambridge, MA: MIT Press, 2022.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-blue"></div><div class="item-content"><div class="item-body">[5] B. W. Kernighan and D. M. Ritchie, <i>The C Programming Language</i>, 2nd ed., Englewood Cliffs, NJ: Prentice Hall, 1988.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-blue"></div><div class="item-content"><div class="item-body">[6] N. Goel and R. B. Garg, "A Comparative Study of CPU Scheduling Algorithms," <i>International Journal of Graphics &amp; Image Processing (IJGIP)</i>, vol. 2, no. 4, pp. 245-252, 2012 / arXiv:1208.5714.</div></div></div>
+      <div class="item-card"><div class="pill-bar pill-blue"></div><div class="item-content"><div class="item-body">[7] H. Topcuoglu, S. Hariri, and M. -Y. Wu, "Performance-effective and low-complexity task scheduling for directed acyclic graphs," <i>IEEE Transactions on Parallel and Distributed Systems</i>, vol. 13, no. 3, pp. 260-274, March 2002.</div></div></div>
+    </div>
+    <div class="slide-footer"><span>SchedulX - DSA EL Presentation</span><span>Slide 10</span></div>
+  </div>
+
+  <!-- SLIDE 11 -->
+  <div class="slide title-slide">
+    <div class="main-title" style="font-size: 4rem;">Thank You!</div>
+    <div class="main-subtitle" style="font-size: 1.8rem; color: #93c5fd; margin-bottom: 20px;">Questions &amp; Discussion</div>
+    <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); padding: 20px 30px; border-radius: 12px; width: 75%; margin-bottom: 20px;">
+      <p style="font-size: 1.1rem; color: white; font-weight: 600; margin-bottom: 6px;">SchedulX — DSA Experiential Learning Project</p>
+      <p style="font-size: 0.95rem; color: #cbd5e1;">Pure C Engine • 7 Hand-crafted Data Structures • Interactive Web Visualizer • Vercel Cloud</p>
+      <p style="font-size: 0.95rem; color: #60a5fa; margin-top: 10px; font-weight: 600;">GitHub Repository: github.com/Apvikas1267/SchedulX</p>
+    </div>
+    <div class="slide-footer" style="border: none; color: #64748b;">
+      <span>Department of Computer Science &amp; Engineering</span>
+      <span>R V College of Engineering</span>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
